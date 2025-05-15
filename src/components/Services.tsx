@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Calendar, Database, Mail, Star, Chart, Shield } from "lucide-react";
+import { Calendar, Database, Mail, Star, BarChart, Shield } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
 const Services = () => {
@@ -36,7 +36,7 @@ const Services = () => {
         "Automated systems to collect and manage Google reviews, monitoring your online reputation and building patient trust.",
     },
     {
-      icon: <ChartBar className="h-6 w-6" />,
+      icon: <BarChart className="h-6 w-6" />,
       title: "Analytics Dashboard",
       description:
         "Comprehensive analytics platform providing insights into practice performance, patient retention, and revenue trends.",
