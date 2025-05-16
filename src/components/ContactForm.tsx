@@ -22,6 +22,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters" }),
@@ -51,18 +52,44 @@ const ContactForm = () => {
   const onSubmit = async (data: FormValues) => {
     setIsSubmitting(true);
     
-    // Simulate form submission
-    console.log("Form submitted:", data);
-    
-    // Simulate API call delay
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      // Save the form data to Supabase
+      const { error } = await supabase
+        .from('demo_bookings')
+        .insert([
+          { 
+            name: data.name,
+            email: data.email,
+            phone: data.phone,
+            clinic_size: data.clinicSize,
+            message: data.message || null
+          }
+        ]);
+        
+      if (error) {
+        console.error("Error saving demo booking:", error);
+        toast({
+          variant: "destructive",
+          title: "Submission failed",
+          description: "There was a problem submitting your request. Please try again.",
+        });
+      } else {
+        toast({
+          title: "Request received!",
+          description: "A member of our team will contact you shortly.",
+        });
+        form.reset();
+      }
+    } catch (err) {
+      console.error("Error in form submission:", err);
       toast({
-        title: "Request received!",
-        description: "A member of our team will contact you shortly.",
+        variant: "destructive",
+        title: "Submission failed",
+        description: "An unexpected error occurred. Please try again.",
       });
-      form.reset();
-    }, 1000);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
